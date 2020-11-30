@@ -1,4 +1,6 @@
+const webpack = require('webpack');
 const path = require('path');
+// const { webpack } = require('webpack');
 
 // need to create the main configuration object within the file.
 // basic configuration, we need to provide webpack with three properties - 
@@ -15,5 +17,11 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'main.bundle.js'
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: "jQuery",
+            jQuery: 'jquery'
+        }),
+    ],
     mode: 'development'
 };
