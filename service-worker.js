@@ -20,6 +20,8 @@ const FILES_TO_CACHE = [
     "./dist/schedule.bundle.js"
   ];
 
+  // Installing the service worker
+  /*
 // we are not using window.addEventListener because service workers run before the window object has even been created. 
 // Instead we use the "self" keyword to instantiate listeners on the service worker
 // self here refers to the service worker object
@@ -34,3 +36,29 @@ self.addEventListener('install', function (e) {
         })
     )
 })
+*/
+
+// activating the service worker
+// .keys() returns an arry of all cahce names, which we are calling "keyList"
+// keyList is a perameter that contains all cache names under <username>.github.io - 
+// because we may host many sites from the same URL, we should filter out caches that have the app prefix
+// well capture the ones that have that prefix, stored in "APP_PREFIX", and save them to an array called cacheKeeplist using the .filter() method
+self.addEventListener('activate', function(e) {
+    e.waitUntil(
+      caches.keys().then(function(keyList) {
+        let cacheKeeplist = keyList.filter(function(key) {
+          return key.indexOf(APP_PREFIX);
+        });
+        cacheKeeplist.push(CACHE_NAME);
+  
+        return Promise.all(
+          keyList.map(function(key, i) {
+            if (cacheKeeplist.indexOf(key) === -1) {
+              console.log('deleting cache : ' + keyList[i]);
+              return caches.delete(keyList[i]);
+            }
+          })
+        );
+      })
+    );
+  });
