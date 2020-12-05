@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpackPwaManifest = require("webpack-pwa-manifest");
 // const { webpack } = require('webpack');
 
 // need to create the main configuration object within the file.
@@ -54,6 +55,24 @@ module.exports = {
         // We can set this value to disable to temporarily stop the reporting and automatic opening of this report in the browser
         new BundleAnalyzerPlugin({
             analyzerMode: "static", // the report outputs to an HTML file in the dist folder
+        }),
+        new webpackPwaManifest({ // new means that we invoking a new constructor function
+            name: "food Event",
+            short_name: "foodies",
+            description: "An app that allows you to view upcoming food events.",
+            start_url: "../index.html",
+            background_color: "#01579b",
+            theme_color: "#ffffff",
+            // fingerprints and injection are specific to the manifest plugin
+            fingerprints: false, // telss webpack whether or not it should generate unique fingerprints so that each time a new manifest is generated - 
+            // it looks like this manifest.lhge325d.json, this is why its set to false
+            inject: false, // injection property determines whether the link to the manifest.json is added to the HTML. Because we are not using fingerprints - 
+            // we can set inject to false
+            icons: [{
+                src: path.resolve("assets/img/icons/icon-512x512.png"),
+                sizes: [96, 128, 192, 256, 384, 512],
+                destination: path.join("assets", "icons")
+            }]
         })
     ],
     mode: 'development'
