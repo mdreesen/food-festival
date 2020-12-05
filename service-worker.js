@@ -62,3 +62,27 @@ self.addEventListener('activate', function(e) {
       })
     );
   });
+
+
+  // Having the application retrieve information form the cache
+  // in this we are using an object called respondWith() to intercept the fetch request. 
+  // in the object, we will be checking to see if the the request is stored in the cache or not
+  // If it is stored in the cache, "e.respondWith" will deliver the resource directly from the cache; otherwise the resource will be retrieved normally
+  // first we use ".match()" to determine if the resource already exists in the caches, if it does well log the URL to the console with a message and then return the cached resource
+  self.addEventListener('fetch', function (e) {
+    console.log('fetch request : ' + e.request.url)
+    e.respondWith(
+      caches.match(e.request).then(function (request) {
+        if (request) { // if cache is available, respond with cache
+          console.log('responding with cache : ' + e.request.url)
+          return request
+        } else { // if there is no cache, try fetching request
+          console.log('file is not cached, fetching : ' + e.request.url)
+          return fetch(e.request)
+      }
+      
+      // You can omit if/else for console.log & put one line below like this too.
+      // return request || fetch(e.request)
+      })
+    )
+  })
